@@ -1,16 +1,16 @@
 from PIL import Image
 
-def convertToBlackAndWhite(image):
+def convert_to_black_and_white(image):
     return image.convert("L")
 
-def openImage(image):
+def open_image(image):
     im = Image.open(image)
     return im
 
-def showImage(image):
+def show_image(image):
     print(image)
     return image.show()
 	
-def saveImage(image, imgOut):
+def save_image(image, imgOut):
 	im = image.save("images/" + imgOut + ".jpg")
 	return im
