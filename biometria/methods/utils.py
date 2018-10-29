@@ -1,19 +1,20 @@
-from PIL import Image
+# encoding: utf-8
+from PIL import Image, ImageStat
+from math import sqrt
 import json
 
 sobelOperator = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
 
-# TODO: Não finalizada
-def gradient_orientation(image, block_size):
+def gradient_orientation(image, blockSize):
     size = get_size(image)
     coordinate = get_coordinate(size)
     getPixel = get_pixel(image, (coordinate['x'], coordinate['y']))
     sobelCoordinate = get_sobel_coordinates(sobelOperator)
 
-    result = [[] for i in range(1, coordinate['x'], block_size)]
+    result = [[] for i in range(1, coordinate['x'], blockSize)]
 
-    for i in range(1, coordinate['x'], block_size):
-        for j in range(1, coordinate['y'], block_size):
+    for i in range(1, coordinate['x'], blockSize):
+        for j in range(1, coordinate['y'], blockSize):
             print('i,j', (i,j))
             # print('i', i)
             # print('j', j)
@@ -26,8 +27,8 @@ def get_coordinate(size):
     return json.loads(size)
 
 def get_pixel(image, (coordinateX, coordinateY)):
-    image_load = image.load()
-    return lambda coordinateX, coordinateY: image_load[coordinateX, coordinateY]
+    imageLoaded = image_load(image)
+    return lambda coordinateX, coordinateY: imageLoaded[coordinateX, coordinateY]
 
 def get_size(image):
     (x,y) = image.size
@@ -37,6 +38,9 @@ def get_size(image):
 def get_sobel_coordinates(sobelOperator):
     sobel = json.dumps({'xSobel': transpose(sobelOperator), 'ySobel': sobelOperator})
     return json.loads(sobel)
+
+def image_load(image):
+    return image.load()
 
 def open_image(image):
     imageOpened = Image.open(image)
