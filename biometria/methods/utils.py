@@ -42,6 +42,22 @@ def get_sobel_coordinates(sobelOperator):
 def image_load(image):
     return image.load()
 
+def image_mean(image):
+    statistics = ImageStat.Stat(image)
+    mean = statistics.mean[0]
+    return mean
+
+def image_standard_deviation(image):
+    statistics = ImageStat.Stat(image)
+    standardDeviation = statistics.stddev[0]
+    return standardDeviation
+
+def normalize_pixel(x, inputVariance, variance, inputMean, mean):
+    dev_coeff = sqrt((inputVariance * ((x - mean)**2)) / variance)
+    if x > mean:
+        return inputMean + dev_coeff
+    return inputMean - dev_coeff
+
 def open_image(image):
     imageOpened = Image.open(image)
     return imageOpened

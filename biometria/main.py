@@ -7,3 +7,8 @@ def orientation_field(blockSize):
     image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\biometria\\images\\fingerprint.jpg"
     print "main"
     return methods.orientation_field.principal(image, blockSize)
+
+def normalization(inputMean, inputVariance):
+    image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\biometria\\images\\fingerprint.jpg"
+    print "main"
+    return methods.normalization.principal(image, inputMean, inputVariance)
