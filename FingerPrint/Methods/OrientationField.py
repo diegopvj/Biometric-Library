@@ -6,13 +6,13 @@ sobelOperator = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
 def principal(image, inputBlockSize):
     print "depois"
     originalImage = Utils.open_image(image)
-    blockSize = int(inputBlockSize)
     imageConverted = Utils.convert_to_black_and_white(originalImage)
     showImage = Utils.show_image(imageConverted)
-    gradientOrientation = gradient_orientation_impl(imageConverted, blockSize)
+    gradientOrientation = gradient_orientation_impl(imageConverted, inputBlockSize)
     return gradientOrientation
 
-def gradient_orientation_extraction_impl(image, blockSize):
+def gradient_orientation_extraction_impl(image, inputBlockSize):
+    blockSize = int(inputBlockSize)
     size = Utils.get_size(image)
     coordinate = Utils.get_coordinate(size)
     getPixel = Utils.get_pixel(image, (coordinate['x'], coordinate['y']))
