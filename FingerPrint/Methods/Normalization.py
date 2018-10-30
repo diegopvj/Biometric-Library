@@ -1,10 +1,10 @@
 # encoding: utf-8
-import utils
+import Utils
 
 def principal(im, inputMean, inputVariance):
     print "principal"
-    image = utils.open_image(im)
-    imageConverted = utils.convert_to_black_and_white(image)
+    image = Utils.open_image(im)
+    imageConverted = Utils.convert_to_black_and_white(image)
     imageConverted.show()
     normalization = normalize(imageConverted, inputMean, inputVariance)
     normalization.show()
@@ -12,7 +12,7 @@ def principal(im, inputMean, inputVariance):
 def normalize(image, inputMean, inputVariance):
     float(inputMean)
     float(inputVariance)
-    mean = utils.image_mean(image)
-    standardDeviation = utils.image_standard_deviation(image)
+    mean = Utils.image_mean(image)
+    standardDeviation = Utils.image_standard_deviation(image)
     variance = standardDeviation ** 2
-    return image.point(lambda x: utils.normalize_pixel(x, inputVariance, variance, inputMean, mean))
+    return image.point(lambda x: Utils.normalize_pixel(x, inputVariance, variance, inputMean, mean))
