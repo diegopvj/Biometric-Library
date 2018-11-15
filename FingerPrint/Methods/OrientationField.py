@@ -1,28 +1,25 @@
 # encoding: utf-8
 import Utils
+import json
 
-sobelOperator = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
+sobelMask = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
 
 def principal(image, inputBlockSize):
     print "depois"
     originalImage = Utils.open_image(image)
     imageConverted = Utils.convert_to_black_and_white(originalImage)
-    showImage = Utils.show_image(imageConverted)
-    gradientOrientation = gradient_orientation_impl(imageConverted, inputBlockSize)
+    imageConverted.show()
+    gradientOrientation = gradient_orientation_extraction_impl(imageConverted, inputBlockSize)
     return gradientOrientation
 
 def gradient_orientation_extraction_impl(image, inputBlockSize):
     blockSize = int(inputBlockSize)
-    size = Utils.get_size(image)
-    coordinate = Utils.get_coordinate(size)
-    getPixel = Utils.get_pixel(image, (coordinate['x'], coordinate['y']))
-    sobelCoordinate = Utils.get_sobel_coordinates(sobelOperator)
+    imageSize = Utils.get_size(image)
+    setPixel = Utils.set_pixel(image, (imageSize['x'], imageSize['y']))
+    sobelCoordinate = get_sobel_coordinates(sobelMask)
+    orientationInEachBlock = Utils.calculate_orientation_in_each_block(blockSize, imageSize, sobelCoordinate, setPixel)
+    return Utils.make_lines(image, imageSize, orientationInEachBlock, blockSize).show()
 
-    result = [[] for i in range(1, coordinate['x'], blockSize)]
-
-    for i in range(1, coordinate['x'], blockSize):
-        for j in range(1, coordinate['y'], blockSize):
-            print('i,j', (i,j))
-            # print('i', i)
-            # print('j', j)
-    return result
+def get_sobel_coordinates(sobelMask):
+    sobel = json.dumps({'x': Utils.transpose(sobelMask), 'y': sobelMask})
+    return json.loads(sobel)

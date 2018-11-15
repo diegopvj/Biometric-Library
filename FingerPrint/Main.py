@@ -2,8 +2,10 @@
 
 from Methods import OrientationField, Normalization, RidgeFrequency
 
-def orientation_field(image, inputBlockSize):
+def orientation_field(inputBlockSize):
     print "orientation_field"
+    # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
+    image = "C:\\Users\\Diego\\Desktop\\digitais\\107_7.tif"
     # image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\FingerPrint\\images\\fingerprint.jpg"
     print "main"
     return OrientationField.principal(image, inputBlockSize)
