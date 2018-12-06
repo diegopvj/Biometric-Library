@@ -34,20 +34,9 @@ def convert_to_black_and_white(image):
 def convert_to_RGB(image):
     return image.convert("RGB")
 
-def make_lines(image, imageSize, orientationInEachBlock, blockSize):
-    newImage = convert_to_RGB(image)
-    imageDraw = ImageDraw.Draw(newImage)
-
-    for blockXIndex, blockYIndex in itertools.product(range(1, imageSize['x'], blockSize), range(1, imageSize['y'], blockSize)):
-        orientationAngle = orientationInEachBlock[(blockXIndex - 1) / blockSize][(blockYIndex - 1) / blockSize]
-        tangent = math.tan(orientationAngle)
-        (x0y0, xy) = get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent)
-        
-        imageDraw.line([x0y0, xy], fill=250)
-
-    del imageDraw
-
-    return newImage
+def image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock):
+    print("orientationInEachBlock", orientationInEachBlock)
+    frequencys = [[0] for i in range(0, imageSize['x'] / blockSize)]
 
 def get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent):
     if -1 <= tangent and tangent <= 1:
@@ -76,19 +65,37 @@ def image_standard_deviation(image):
     standardDeviation = statistics.stddev[0]
     return standardDeviation
 
+def make_lines(image, imageSize, orientationInEachBlock, blockSize):
+    # imageSize = get_size(image)
+    newImage = convert_to_RGB(image)
+    imageDraw = ImageDraw.Draw(newImage)
+
+    for blockXIndex, blockYIndex in itertools.product(range(1, imageSize['x'], blockSize), range(1, imageSize['y'], blockSize)):
+        orientationAngle = orientationInEachBlock[(blockXIndex - 1) / blockSize][(blockYIndex - 1) / blockSize]
+        tangent = math.tan(orientationAngle)
+        (x0y0, xy) = get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent)
+        
+        imageDraw.line([x0y0, xy], fill=250)
+
+    del imageDraw
+
+    return newImage
+
 def normalize_pixel(x, inputVariance, variance, inputMean, mean):
-    dev_coeff = sqrt((inputVariance * ((x - mean)**2)) / variance)
+    deviationCoeff = math.sqrt((inputVariance * ((x - mean)**2)) / variance)
     if x > mean:
-        return inputMean + dev_coeff
-    return inputMean - dev_coeff
+        return inputMean + deviationCoeff
+    return inputMean - deviationCoeff
 
 def open_image(image):
     imageOpened = Image.open(image)
     return imageOpened
 
-def save_image(image, imgOut):
-	imageSaved = image.save('images/' + imgOut + '.jpg')
-	return imageSaved    
+def ridge_frequency(image, blockSize, orientationInEachBlock):
+    imageSize = get_size(image)
+    imageLoad = image_load(image)
+    frequencys = image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock)
+    ridgeFrequencyExtracted = image.copy()  
 
 def set_mask(setPixel, sobel, pixelInBlockRow, pixelInBlockColumn):
     sobelDimension = len(sobel)
