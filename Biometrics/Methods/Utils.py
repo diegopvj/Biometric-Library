@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 from PIL import Image, ImageDraw, ImageStat
 import math
 import json
@@ -52,6 +53,9 @@ def get_size(image):
     size = json.dumps({'x': x, 'y': y})
     return json.loads(size)
 
+def image_copy(image):
+    return image.copy()
+
 def image_load(image):
     return image.load()
 
@@ -96,6 +100,21 @@ def ridge_frequency(image, blockSize, orientationInEachBlock):
     imageLoad = image_load(image)
     frequencys = image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock)
     ridgeFrequencyExtracted = image.copy()  
+
+def segmentation(image, imageSize, inputBlockSize, threshold, segmentedImage, varianceImage):
+    for blockXIndex, blockYIndex in itertools.product(range(0, imageSize['x'], inputBlockSize), range(0, imageSize['y'], inputBlockSize)):
+        left = blockXIndex
+        top = blockYIndex
+        right = min(blockXIndex + inputBlockSize, imageSize['x'])
+        bottom = min(blockYIndex + inputBlockSize, imageSize['y'])
+        block = (left, top, right, bottom)
+        croppedBlock = image.crop(block)
+        blockStandardDeviation = image_standard_deviation(croppedBlock)
+        varianceImage.paste(blockStandardDeviation, block)
+        if blockStandardDeviation < threshold:
+            segmentedImage.paste(0, block)
+    return (segmentedImage, varianceImage)
+
 
 def set_mask(setPixel, sobel, pixelInBlockRow, pixelInBlockColumn):
     sobelDimension = len(sobel)
