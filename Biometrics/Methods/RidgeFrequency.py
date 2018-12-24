@@ -15,4 +15,4 @@ def ridge_frequency_impl(image, inputBlockSize):
     blockSize = int(inputBlockSize)
     orientationInEachBlock = OrientationField.gradient_orientation_extraction_impl(image, blockSize)
     ridgeFrequency = Utils.ridge_frequency(image, blockSize, orientationInEachBlock)
-    return ridgeFrequency
+    return ridgeFrequency.show()
