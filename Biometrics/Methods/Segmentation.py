@@ -4,13 +4,11 @@ import Utils
 import itertools
 
 def principal(image, inputBlockSize, threshold):
-    print "depois"
     originalImage = Utils.open_image(image)
     imageConverted = Utils.convert_to_black_and_white(originalImage)
-    showImage = Utils.show_image(imageConverted)
     segmentedImage, varianceImage = segmented_and_variance_impl(imageConverted, inputBlockSize, threshold)
-    segmentedImage.show()
-    varianceImage.show()
+    Utils.show_image(segmentedImage)
+    Utils.show_image(varianceImage)
     return segmentedImage, varianceImage
 
 
