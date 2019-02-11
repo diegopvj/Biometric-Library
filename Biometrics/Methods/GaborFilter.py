@@ -16,9 +16,9 @@ def gabor_filter_impl(imageConverted, imageSize, inputBlockSize, xSigma, ySigma)
     blockSize = int(inputBlockSize)
     orientationInEachBlock = SmoothOrientationField.gradient_orientation_smooth(imageConverted, imageSize, inputBlockSize)
     print "local ridge orientation"
-    imageLoad = Utils.image_load(imageConverted)
-    frequencys = Utils.image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock)
+    imageLoaded = Utils.image_load(imageConverted)
+    frequencys = Utils.image_frequencys(imageSize, imageLoaded, blockSize, orientationInEachBlock)
     print "local ridge frequency"
-    gaborApplied = Utils.gabor_filter(imageConverted, imageLoad, imageSize, blockSize, xSigma, ySigma, orientationInEachBlock, frequencys)
+    gaborApplied = Utils.gabor_filter(imageConverted, imageLoaded, imageSize, blockSize, xSigma, ySigma, orientationInEachBlock, frequencys)
     
     return gaborApplied

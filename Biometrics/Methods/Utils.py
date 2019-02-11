@@ -6,11 +6,27 @@ import json
 import itertools
 import copy
 
+thinning = False
 
-def apply_function_to_each_orientation(orientations, func):
+
+def apply_function_on_each_pixel(orientations, func):
     for x in range(0, len(orientations)):
         for y in range(0, len(orientations[x])):
             orientations[x][y] = func(orientations[x][y])
+
+def apply_structuring_elements(pixels, elements):
+    thinning = False
+    for element in elements:
+        thinning |= merge_element(pixels, element, flatten(element).count(1))
+
+    return thinning;
+
+def apply_values_to_pixels(image, imageSize, pixels):
+    imageLoaded = image_load(image)
+
+    for pixelInImageRow in range(0, imageSize['x']):
+        for pixelInImageColumn in range(0, imageSize['y']):
+            imageLoaded[pixelInImageRow, pixelInImageColumn] = pixels[pixelInImageRow][pixelInImageColumn]
 
 def block_frequency(i, j, blockSize, orientationInEachBlock, im_load):
     tangent = math.tan(orientationInEachBlock)
@@ -33,13 +49,13 @@ def block_frequency(i, j, blockSize, orientationInEachBlock, im_load):
     divisions = len(greyLevels)
     count = detect_peaks_through_grey_levels(greyLevels)
 
-    return count / divisions if divisions > 0 else 0
+    return count / divisions if divisions > 0 else 0;
 
 def calculate_denominator(Gx, Gy):
-    return Gx ** 2 - Gy ** 2
+    return Gx ** 2 - Gy ** 2;
 
 def calculate_nominator(Gx, Gy):
-    return 2 * Gx * Gy
+    return 2 * Gx * Gy;
 
 def calculate_orientation_in_each_block(blockSize, imageSize, sobel, setPixel):
     blockOrientation = [[] for blockXIndex in range(1, imageSize['x'], blockSize)]
@@ -59,13 +75,13 @@ def calculate_orientation_in_each_block(blockSize, imageSize, sobel, setPixel):
         gradientMagnitudeInEachPixel = (math.pi + math.atan2(gradientMagnitudeNominator, gradientMagnitudeDenominator)) / 2
         blockOrientation[(blockXIndex - 1) / blockSize].append(gradientMagnitudeInEachPixel)
     
-    return blockOrientation
+    return blockOrientation;
 
 def convert_to_black_and_white(image):
-    return image.convert('L')
+    return image.convert('L');
 
 def convert_to_RGB(image):
-    return image.convert("RGB")
+    return image.convert("RGB");
 
 def detect_peaks_through_grey_levels(greyLevels):
     divisions = len(greyLevels)
@@ -87,9 +103,12 @@ def detect_peaks_through_grey_levels(greyLevels):
             peak = True
         lastLevel = grayLevel
     
-    return count
+    return count;
 
-def gabor_filter(imageConverted, imageLoad, imageSize, blockSize, xSigma, ySigma, orientationInEachBlock, frequencys):
+def flatten(matrix):
+    return reduce(lambda x, y: x + y, matrix, []);
+
+def gabor_filter(imageConverted, imageLoaded, imageSize, blockSize, xSigma, ySigma, orientationInEachBlock, frequencys):
     gaussKernel = get_gauss_kernel(3)
     merge_kernel(frequencys, gaussKernel)
 
@@ -100,14 +119,14 @@ def gabor_filter(imageConverted, imageLoad, imageSize, blockSize, xSigma, ySigma
         
         for pixelInBlockRow, pixelInBlockColumn in itertools.product(range(0, blockSize), 
         range(0, blockSize)): 
-            imageLoad[blockRowIndex * blockSize + pixelInBlockRow,
+            imageLoaded[blockRowIndex * blockSize + pixelInBlockRow,
             blockColumnIndex * blockSize + pixelInBlockColumn] = set_mask(
-                lambda x, y: imageLoad[x, y],
+                lambda x, y: imageLoaded[x, y],
                 kernel,
                 blockRowIndex * blockSize + pixelInBlockRow,
                 blockColumnIndex * blockSize + pixelInBlockColumn)
     
-    return imageConverted
+    return imageConverted;
 
 def gabor_kernel(blockSize, orientation, frequency, xSigma, ySigma):
     cos = math.cos(orientation)
@@ -120,12 +139,12 @@ def gabor_kernel(blockSize, orientation, frequency, xSigma, ySigma):
         math.exp(-(
             (xAngle(x, y) ** 2) / (xSigma ** 2) +
             (yAngle(x, y) ** 2) / (ySigma ** 2)) / 2) *
-        math.cos(2 * math.pi * frequency * xAngle(x, y)))
+        math.cos(2 * math.pi * frequency * xAngle(x, y)));
 
 def gauss_func(x, y):
     sigma = 1
     
-    return (1 / (2 * math.pi * sigma)) * math.exp(-(x * x + y * y) / (2 * sigma))
+    return (1 / (2 * math.pi * sigma)) * math.exp(-(x * x + y * y) / (2 * sigma));
 
 def get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent):
     if -1 <= tangent and tangent <= 1:
@@ -135,53 +154,64 @@ def get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangen
         x0y0 = (blockXIndex + blockSize/2 + blockSize/(2 * tangent), blockYIndex + blockSize/2)
         xy = (blockXIndex + blockSize/2 - blockSize/(2 * tangent), blockYIndex - blockSize/2)
     
-    return (x0y0, xy)
+    return (x0y0, xy);
 
 def get_gauss_kernel(kernelSize):
-    return kernel_from_func(kernelSize, gauss_func)
+    return kernel_from_func(kernelSize, gauss_func);
+
+def get_pixels_in_image_loaded(image, imageSize):
+    imageLoaded = image_load(image)
+
+    result = []
+    for pixelInImageRow in range(0, imageSize['x']):
+        result.append([])
+        for pixelInImageColumn in range(0, imageSize['y']):
+            result[pixelInImageRow].append(imageLoaded[pixelInImageRow, pixelInImageColumn])
+
+    return result;
 
 def get_size(image):
     (x,y) = image.size
     size = json.dumps({'x': x, 'y': y})
     
-    return json.loads(size)
+    return json.loads(size);
 
 def image_copy(image):
-    return image.copy()
+    return image.copy();
 
 def image_draw(image):
-    return ImageDraw.Draw(image)
+    return ImageDraw.Draw(image);
 
-def image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock):
+def image_frequencys(imageSize, imageLoaded, blockSize, orientationInEachBlock):
     frequencys = [[0] for blockRowIndex in range(0, imageSize['x'] / blockSize)]
     
     for blockRowIndex in range(1, imageSize['x'] / blockSize - 1):
         for blockColumnIndex in range(1, imageSize['y'] / blockSize - 1):
-            frequency = block_frequency(blockRowIndex, blockColumnIndex, blockSize, orientationInEachBlock[blockRowIndex][blockColumnIndex], imageLoad)
+            frequency = block_frequency(blockRowIndex, blockColumnIndex, blockSize, orientationInEachBlock[blockRowIndex][blockColumnIndex], imageLoaded)
             frequencys[blockRowIndex].append(frequency)
         frequencys[blockRowIndex].append(0)
     
     frequencys[0] = frequencys[-1] = [0 for blockRowIndex in range(0, imageSize['y'] / blockSize)]
 
-    return frequencys
+    return frequencys;
 
 def image_load(image):
-    return image.load()
+    return image.load();
 
 def image_mean(image):
     statistics = ImageStat.Stat(image)
     mean = statistics.mean[0]
     
-    return mean
+    return mean;
 
 def image_new(mode, (width, height), color):
-    return Image.new(mode,(width, height), color)
+    return Image.new(mode,(width, height), color);
 
 def image_standard_deviation(image):
     statistics = ImageStat.Stat(image)
     standardDeviation = statistics.stddev[0]
     
-    return standardDeviation
+    return standardDeviation;
 
 def kernel_from_func(kernelSize, func):
     kernel = [[] for i in range(0, kernelSize)]
@@ -190,27 +220,27 @@ def kernel_from_func(kernelSize, func):
     range(0, kernelSize)):
         kernel[x].append(func(x - kernelSize / 2, y - kernelSize / 2))
     
-    return kernel
+    return kernel;
 
 def line_points(line, blockSize):
     newBlock = Image.new("L", (blockSize, 3 * blockSize), 100)
     imageDraw = image_draw(newBlock)
     imageDraw.line([(0, line(0) + blockSize), (blockSize, line(blockSize) + blockSize)], fill=10)
-    imageLoad = image_load(newBlock)
+    imageLoaded = image_load(newBlock)
 
     points = []
     
     for pixelInBlockRow, pixelInBlockColumn in itertools.product(range(0, blockSize), 
     range(0, 3 * blockSize)):
-        if imageLoad[pixelInBlockRow, pixelInBlockColumn] == 10:
+        if imageLoaded[pixelInBlockRow, pixelInBlockColumn] == 10:
             points.append((pixelInBlockRow, pixelInBlockColumn - blockSize))
     
     del imageDraw
     del newBlock
 
-    dist = lambda (x, y): (x - blockSize / 2) ** 2 + (y - blockSize / 2) ** 2
+    distance = lambda (x, y): (x - blockSize / 2) ** 2 + (y - blockSize / 2) ** 2
 
-    return sorted(points, cmp = lambda x, y: dist(x) < dist(y))[:blockSize]
+    return sorted(points, cmp = lambda x, y: distance(x) < distance(y))[:blockSize];
 
 def make_lines(image, imageSize, orientationInEachBlock, blockSize):
     newImage = convert_to_RGB(image)
@@ -226,7 +256,22 @@ def make_lines(image, imageSize, orientationInEachBlock, blockSize):
 
     del imageDraw
 
-    return newImage
+    return newImage;
+
+def merge_element(pixels, element, result):
+    global thinning
+    thinning = False
+
+    def pick(old, new):
+        global thinning
+        if new == result:
+            thinning = True
+            return 0.0
+        return old
+
+    merge_kernel_with_func(pixels, element, pick)
+
+    return thinning;
 
 def merge_kernel(pixel, kernel):
     merge_kernel_with_func(pixel, kernel, lambda old, new: new)    
@@ -242,19 +287,25 @@ def normalize_pixel(x, v0, variance, m0, mean):
     deviationCoeff = math.sqrt((v0 * ((x - mean)**2)) / variance)
     
     if x > mean:
-        return m0 + deviationCoeff
+        return m0 + deviationCoeff;
     
-    return m0 - deviationCoeff
+    return m0 - deviationCoeff;
 
 def open_image(image):
     imageOpened = Image.open(image)
     
-    return imageOpened
+    return imageOpened;
+
+def reverse(element):
+    copyElement = element[:]
+    copyElement.reverse()
+
+    return copyElement;
 
 def ridge_frequency(image, blockSize, orientationInEachBlock):
     imageSize = get_size(image)
-    imageLoad = image_load(image)
-    frequencys = image_frequencys(imageSize, imageLoad, blockSize, orientationInEachBlock)
+    imageLoaded = image_load(image)
+    frequencys = image_frequencys(imageSize, imageLoaded, blockSize, orientationInEachBlock)
     ridgeFrequencyExtracted = image.copy()
 
     for blockRowIndex, blockColumnIndex in itertools.product(range(1, imageSize['x'] / blockSize - 1), 
@@ -266,7 +317,7 @@ def ridge_frequency(image, blockSize, orientationInEachBlock):
         box = (left, top, right, bottom)
         ridgeFrequencyExtracted.paste(frequencys[blockRowIndex][blockColumnIndex] * 255.0 * 1.2, box)
 
-    return ridgeFrequencyExtracted 
+    return ridgeFrequencyExtracted;
 
 def segmentation(image, imageSize, inputBlockSize, threshold, segmentedImage, varianceImage):
     for blockXIndex, blockYIndex in itertools.product(range(0, imageSize['x'], inputBlockSize), 
@@ -282,7 +333,7 @@ def segmentation(image, imageSize, inputBlockSize, threshold, segmentedImage, va
         if blockStandardDeviation < threshold:
             segmentedImage.paste(0, block)
     
-    return (segmentedImage, varianceImage)
+    return (segmentedImage, varianceImage);
 
 
 def set_mask(setPixel, mask, pixelInBlockRow, pixelInBlockColumn):
@@ -294,21 +345,21 @@ def set_mask(setPixel, mask, pixelInBlockRow, pixelInBlockColumn):
         pixel = setPixel(pixelInBlockRow + pixelInMaskRow - maskDimension / 2, pixelInBlockColumn + pixelInMaskColumn - maskDimension / 2)
         pixelFiltred += pixel * mask[pixelInMaskRow][pixelInMaskColumn]
     
-    return pixelFiltred
+    return pixelFiltred;
 
 def set_pixel(image, (coordinateX, coordinateY)):
     imageLoaded = image_load(image)
     
-    return lambda coordinateX, coordinateY: imageLoaded[coordinateX, coordinateY]
+    return lambda coordinateX, coordinateY: imageLoaded[coordinateX, coordinateY];
 
 def show_image(image):
-    return image.show()
+    return image.show();
 
 def smooth_orientations(orientation):
     orientationCos = copy.deepcopy(orientation)
     orientationSin = copy.deepcopy(orientation)
-    apply_function_to_each_orientation(orientationCos, lambda x: math.cos(2 * x))
-    apply_function_to_each_orientation(orientationSin, lambda x: math.sin(2 * x))
+    apply_function_on_each_pixel(orientationCos, lambda x: math.cos(2 * x))
+    apply_function_on_each_pixel(orientationSin, lambda x: math.sin(2 * x))
 
     kernelSize = 5
     gaussKernel = get_gauss_kernel(kernelSize)
@@ -319,7 +370,7 @@ def smooth_orientations(orientation):
         for y in range(0, len(orientationCos[x])):
             orientationCos[x][y] = (math.atan2(orientationSin[x][y], orientationCos[x][y])) / 2
 
-    return orientationCos
+    return orientationCos;
 
 def steps_through_vector(tangent, blockSize):
     (x0y0, xy) = get_coordinates_from_line_limits(0, 0, blockSize, tangent)
@@ -328,9 +379,39 @@ def steps_through_vector(tangent, blockSize):
     (xNormal, yNormal) = (xVec / length, yVec / length)
     step = length / blockSize
 
-    return (xNormal, yNormal, step)
+    return (xNormal, yNormal, step);
+
+def structuring_elements():
+    element1 = [[1, 1, 1], [0, 1, 0], [0.1, 0.1, 0.1]]
+    element2 = transpose(element1)
+    element3 = reverse(element1)
+    element4 = transpose(element3)
+    element5 = [[0, 1, 0], [0.1, 1, 1], [0.1, 0.1, 0]]
+    element7 = transpose(element5)
+    element6 = reverse(element7)
+    element8 = reverse(element5)
+
+    thinners = [element1, element2, element3, element4, element5, element6, element7, element8]
+
+    return thinners;
+
+def thinning_structures(imageConverted, imageSize, pixelsInImageLoaded):
+    apply_function_on_each_pixel(pixelsInImageLoaded, lambda x: 0.0 if x > 10 else 1.0)
+    structuringElements = structuring_elements()
+    thinning = True
+    
+    while(thinning):
+        thinning = apply_structuring_elements(pixelsInImageLoaded, structuringElements)
+        print "Applying structuring elements"
+    
+    print "Done Thinning"
+
+    apply_function_on_each_pixel(pixelsInImageLoaded, lambda x: 255.0 * (1 - x))
+    apply_values_to_pixels(imageConverted, imageSize, pixelsInImageLoaded)
+    
+    return imageConverted;
 
 def transpose(matrix):
-    transposedMatrix = list(zip(*matrix))
+    transposedMatrix = map(list, zip(*matrix))
     
-    return transposedMatrix
+    return transposedMatrix;
