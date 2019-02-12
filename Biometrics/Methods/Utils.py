@@ -24,11 +24,11 @@ def apply_structuring_elements(pixels, elements):
 def apply_values_to_pixels(image, imageSize, pixels):
     imageLoaded = image_load(image)
 
-    for pixelInImageRow in range(0, imageSize['x']):
-        for pixelInImageColumn in range(0, imageSize['y']):
-            imageLoaded[pixelInImageRow, pixelInImageColumn] = pixels[pixelInImageRow][pixelInImageColumn]
+    for pixelInImageRow, pixelInImageColumn in itertools.product(range(0, imageSize['x']), 
+    range(0, imageSize['y'])):
+        imageLoaded[pixelInImageRow, pixelInImageColumn] = pixels[pixelInImageRow][pixelInImageColumn]
 
-def block_frequency(i, j, blockSize, orientationInEachBlock, im_load):
+def block_frequency(blockRowIndex, blockColumnIndex, blockSize, orientationInEachBlock, imageLoaded):
     tangent = math.tan(orientationInEachBlock)
     orthoTangent = -1 / tangent
 
@@ -43,7 +43,7 @@ def block_frequency(i, j, blockSize, orientationInEachBlock, im_load):
         grayLevel = 0
         
         for point in points:
-            grayLevel += im_load[point[0] + i * blockSize, point[1] + j * blockSize]
+            grayLevel += imageLoaded[point[0] + blockRowIndex * blockSize, point[1] + blockColumnIndex * blockSize]
         greyLevels.append(grayLevel)
 
     divisions = len(greyLevels)

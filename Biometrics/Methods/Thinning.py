@@ -5,7 +5,9 @@ import Utils
 def principal(image):
     originalImage = Utils.open_image(image)
     imageConverted = Utils.convert_to_black_and_white(originalImage)
-    thinnedImage = thinning_impl(imageConverted).show()
+    thinnedImage = thinning_impl(imageConverted)
+    Utils.show_image(thinnedImage)
+    
     return thinnedImage
 
 def thinning_impl(imageConverted):

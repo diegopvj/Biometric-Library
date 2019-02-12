@@ -14,7 +14,7 @@ def principal(image, inputBlockSize):
 
 def ridge_frequency_impl(imageConverted, imageSize, inputBlockSize):
     blockSize = int(inputBlockSize)
-    orientationInEachBlock = SmoothOrientationField.gradient_orientation_smooth(imageConverted, imageSize, blockSize)
+    orientationInEachBlock = SmoothOrientationField.gradient_orientation_smooth_impl(imageConverted, imageSize, blockSize)
     ridgeFrequency = Utils.ridge_frequency(imageConverted, blockSize, orientationInEachBlock)
     
     return ridgeFrequency 
