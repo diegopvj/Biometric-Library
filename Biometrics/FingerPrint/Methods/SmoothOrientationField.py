@@ -3,7 +3,7 @@
 import Utils
 import OrientationField
 
-def principal(image, inputBlockSize):
+def main(image, inputBlockSize):
     blockSize = int(inputBlockSize)
     originalImage = Utils.open_image(image)
     imageSize = Utils.get_size(originalImage)

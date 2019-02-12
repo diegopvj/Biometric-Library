@@ -3,7 +3,7 @@
 import Utils
 import SmoothOrientationField
 
-def principal(image, inputBlockSize):
+def main(image, inputBlockSize):
     originalImage = Utils.open_image(image)
     imageSize = Utils.get_size(originalImage)
     imageConverted = Utils.convert_to_black_and_white(originalImage)

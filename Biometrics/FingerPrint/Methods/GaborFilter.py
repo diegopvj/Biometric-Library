@@ -4,7 +4,7 @@ import Utils
 import SmoothOrientationField
 import RidgeFrequency
 
-def principal(image, inputBlockSize, xSigma, ySigma):
+def main(image, inputBlockSize, xSigma, ySigma):
     originalImage = Utils.open_image(image)
     imageConverted = Utils.convert_to_black_and_white(originalImage)
     imageSize = Utils.get_size(imageConverted)

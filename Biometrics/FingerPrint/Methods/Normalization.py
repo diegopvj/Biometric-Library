@@ -1,7 +1,7 @@
 # encoding: utf-8
 import Utils
 
-def principal(im, inputMean, inputVariance):
+def main(im, inputMean, inputVariance):
     image = Utils.open_image(im)
     imageConverted = Utils.convert_to_black_and_white(image)
     normalization = normalize(imageConverted, inputMean, inputVariance)
