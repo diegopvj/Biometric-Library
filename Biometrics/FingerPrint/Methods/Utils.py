@@ -329,7 +329,7 @@ def segmentation(image, imageSize, inputBlockSize, threshold, segmentedImage, va
         block = (left, top, right, bottom)
         croppedBlock = image.crop(block)
         blockStandardDeviation = image_standard_deviation(croppedBlock)
-        varianceImage.paste(blockStandardDeviation, block)
+        varianceImage.paste(blockStandardDeviation ** 2, block)
         if blockStandardDeviation < threshold:
             segmentedImage.paste(0, block)
     
