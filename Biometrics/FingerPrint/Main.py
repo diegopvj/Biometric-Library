@@ -44,7 +44,7 @@ def gabor_filter(inputBlockSize, xSigma, ySigma):
     return GaborFilter.main(image, inputBlockSize, xSigma, ySigma)
 
 def thinning_structures():
-    print "gabor_filter"
+    print "thinning"
     image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\image_8_3\\8_3_gabor.jpg"
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
     # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"

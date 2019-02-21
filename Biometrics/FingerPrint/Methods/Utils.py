@@ -386,14 +386,14 @@ def structuring_elements():
     element2 = transpose(element1)
     element3 = reverse(element1)
     element4 = transpose(element3)
-    element5 = [[0, 1, 0], [0.1, 1, 1], [0.1, 0.1, 0]]
+    element5 = [[0, 1, 1], [0.1, 1, 1], [0.1, 0.1, 0]]
     element7 = transpose(element5)
     element6 = reverse(element7)
     element8 = reverse(element5)
 
-    thinners = [element1, element2, element3, element4, element5, element6, element7, element8]
-
-    return thinners;
+    elements = [element1, element2, element3, element4, element5, element6, element7, element8]
+    print("elements", elements)
+    return elements;
 
 def thinning_structures(imageConverted, imageSize, pixelsInImageLoaded):
     apply_function_on_each_pixel(pixelsInImageLoaded, lambda x: 0.0 if x > 10 else 1.0)
