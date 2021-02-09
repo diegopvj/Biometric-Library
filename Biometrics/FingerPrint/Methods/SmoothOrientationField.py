@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-import Utils
-import OrientationField
+from . import Utils
+from . import OrientationField
 
 def main(image, inputBlockSize):
     blockSize = int(inputBlockSize)

@@ -1,5 +1,5 @@
 # encoding: utf-8
-import Utils
+from . import Utils
 
 def main(im, inputMean, inputVariance):
     image = Utils.open_image(im)

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import Utils
+from . import Utils
 import itertools
 
 def main(image, inputBlockSize, threshold):

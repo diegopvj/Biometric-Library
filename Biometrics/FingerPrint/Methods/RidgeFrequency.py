@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-import Utils
-import SmoothOrientationField
+from . import Utils
+from . import SmoothOrientationField
 
 def main(image, inputBlockSize):
     originalImage = Utils.open_image(image)

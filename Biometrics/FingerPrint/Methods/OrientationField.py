@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import Utils
+from . import Utils
 import json
 
 sobelMask = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
