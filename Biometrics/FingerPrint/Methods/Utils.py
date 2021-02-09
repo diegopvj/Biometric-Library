@@ -61,20 +61,18 @@ def calculate_nominator(Gx, Gy):
 def calculate_orientation_in_each_block(blockSize, imageSize, sobel, setPixel):
     blockOrientation = [[] for blockXIndex in range(1, imageSize['x'], blockSize)]
     
-    for blockXIndex, blockYIndex in itertools.product(list(range(1, imageSize['x'], blockSize)), 
-    list(range(1, imageSize['y'], blockSize))):
+    for blockXIndex, blockYIndex in itertools.product(list(range(1, imageSize['x'], blockSize)), list(range(1, imageSize['y'], blockSize))):
         gradientMagnitudeNominator = 0
         gradientMagnitudeDenominator = 0
         
-        for pixelInBlockRow, pixelInBlockColumn in itertools.product(list(range(blockXIndex, min(blockXIndex + blockSize , imageSize['x'] - 1))), 
-        list(range(blockYIndex, min(blockYIndex + blockSize, imageSize['y'] - 1)))):
+        for pixelInBlockRow, pixelInBlockColumn in itertools.product(list(range(blockXIndex, min(blockXIndex + blockSize , imageSize['x'] - 1))), list(range(blockYIndex, min(blockYIndex + blockSize, imageSize['y'] - 1)))):
             Gx = set_mask(setPixel, sobel['x'], pixelInBlockRow, pixelInBlockColumn)
             Gy = set_mask(setPixel, sobel['y'], pixelInBlockRow, pixelInBlockColumn)
             gradientMagnitudeNominator += calculate_nominator(Gx, Gy)
             gradientMagnitudeDenominator += calculate_denominator(Gx, Gy)
         
         gradientMagnitudeInEachPixel = (math.pi + math.atan2(gradientMagnitudeNominator, gradientMagnitudeDenominator)) / 2
-        blockOrientation[(blockXIndex - 1) / blockSize].append(gradientMagnitudeInEachPixel)
+        blockOrientation[int((blockXIndex - 1) / blockSize)].append(gradientMagnitudeInEachPixel)
     
     return blockOrientation
 
@@ -250,7 +248,7 @@ def make_lines(image, imageSize, orientationInEachBlock, blockSize):
 
     for blockXIndex, blockYIndex in itertools.product(list(range(1, imageSize['x'], blockSize)), 
     list(range(1, imageSize['y'], blockSize))):
-        orientationAngle = orientationInEachBlock[(blockXIndex - 1) / blockSize][(blockYIndex - 1) / blockSize]
+        orientationAngle = orientationInEachBlock[int((blockXIndex - 1) / blockSize)][int((blockYIndex - 1) / blockSize)]
         tangent = math.tan(orientationAngle)
         (x0y0, xy) = get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent)
         
@@ -342,9 +340,8 @@ def set_mask(setPixel, mask, pixelInBlockRow, pixelInBlockColumn):
     maskDimension = len(mask)
     pixelFiltred = 0
     
-    for pixelInMaskRow, pixelInMaskColumn in itertools.product(list(range(0, maskDimension)), 
-    list(range(0, maskDimension))):
-        pixel = setPixel(pixelInBlockRow + pixelInMaskRow - maskDimension / 2, pixelInBlockColumn + pixelInMaskColumn - maskDimension / 2)
+    for pixelInMaskRow, pixelInMaskColumn in itertools.product(list(range(0, maskDimension)), list(range(0, maskDimension))):
+        pixel = setPixel(pixelInBlockRow + pixelInMaskRow - int(maskDimension / 2), pixelInBlockColumn + pixelInMaskColumn - int(maskDimension / 2))
         pixelFiltred += pixel * mask[pixelInMaskRow][pixelInMaskColumn]
     
     return pixelFiltred
