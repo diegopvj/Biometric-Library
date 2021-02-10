@@ -13,7 +13,8 @@ def orientation_field_extraction(inputBlockSize):
 def smooth_orientation_field(inputBlockSize):
     print("smooth_orientation_field")
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
-    image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    image = '/Users/julia.nascimento/Julia/Biometric-Library/image_1_1/1_1.jpg'
     
     return SmoothOrientationField.main(image, inputBlockSize)
 

@@ -142,8 +142,7 @@ def gabor_kernel(blockSize, orientation, frequency, xSigma, ySigma):
 
 def gauss_func(x, y):
     sigma = 1
-    
-    return (1 / (2 * math.pi * sigma)) * math.exp(-(x * x + y * y) / (2 * sigma))
+    return (1 / (2 * math.pi * sigma)) * math.exp(math.floor(-(x * x + y * y) / (2 * sigma)))
 
 def get_coordinates_from_line_limits(blockXIndex, blockYIndex, blockSize, tangent):
     if -1 <= tangent and tangent <= 1:
@@ -216,9 +215,8 @@ def image_standard_deviation(image):
 def kernel_from_func(kernelSize, func):
     kernel = [[] for i in range(0, kernelSize)]
     
-    for x, y in itertools.product(list(range(0, kernelSize)), 
-    list(range(0, kernelSize))):
-        kernel[x].append(func(x - kernelSize / 2, y - kernelSize / 2))
+    for x, y in itertools.product(list(range(0, kernelSize)), list(range(0, kernelSize))):
+        kernel[x].append(func(x - int(kernelSize / 2), y - int(kernelSize / 2)))
     
     return kernel
 
@@ -279,8 +277,8 @@ def merge_kernel(pixel, kernel):
 def merge_kernel_with_func(pixel, kernel, func):
     size = len(kernel)
     
-    for x in range(size / 2, len(pixel) - size / 2):
-        for y in range(size / 2, len(pixel[x]) - size / 2):
+    for x in range(int(size / 2), len(pixel) - int(size / 2)):
+        for y in range(int(size / 2), len(pixel[x]) - int(size / 2)):
             pixel[x][y] = func(pixel[x][y], set_mask(lambda x, y: pixel[x][y], kernel, x, y))
 
 def normalize_pixel(x, v0, variance, m0, mean):
