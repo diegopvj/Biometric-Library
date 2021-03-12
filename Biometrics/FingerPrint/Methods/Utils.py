@@ -6,6 +6,7 @@ import json
 import itertools
 import copy
 from functools import reduce
+import numpy as np
 
 thinning = False
 
@@ -181,15 +182,15 @@ def image_draw(image):
     return ImageDraw.Draw(image)
 
 def image_frequencys(imageSize, imageLoaded, blockSize, orientationInEachBlock):
-    frequencys = [[0] for blockRowIndex in range(0, imageSize['x'] / blockSize)]
+    frequencys = [[0] for blockRowIndex in range(0, int(imageSize['x'] / blockSize))]
     
-    for blockRowIndex in range(1, imageSize['x'] / blockSize - 1):
-        for blockColumnIndex in range(1, imageSize['y'] / blockSize - 1):
+    for blockRowIndex in range(1, int(imageSize['x'] / blockSize - 1)):
+        for blockColumnIndex in range(1, int(imageSize['y'] / blockSize - 1)):
             frequency = block_frequency(blockRowIndex, blockColumnIndex, blockSize, orientationInEachBlock[blockRowIndex][blockColumnIndex], imageLoaded)
             frequencys[blockRowIndex].append(frequency)
         frequencys[blockRowIndex].append(0)
     
-    frequencys[0] = frequencys[-1] = [0 for blockRowIndex in range(0, imageSize['y'] / blockSize)]
+    frequencys[0] = frequencys[-1] = [0 for blockRowIndex in range(0, int(imageSize['y'] / blockSize))]
 
     return frequencys
 
@@ -228,17 +229,17 @@ def line_points(line, blockSize):
 
     points = []
     
-    for pixelInBlockRow, pixelInBlockColumn in itertools.product(list(range(0, blockSize)), 
-    list(range(0, 3 * blockSize))):
+    for pixelInBlockRow, pixelInBlockColumn in itertools.product(list(range(0, blockSize)), list(range(0, 3 * blockSize))):
         if imageLoaded[pixelInBlockRow, pixelInBlockColumn] == 10:
             points.append((pixelInBlockRow, pixelInBlockColumn - blockSize))
-    
+
     del imageDraw
     del newBlock
 
-    distance = lambda x_y: (x_y[0] - blockSize / 2) ** 2 + (x_y[1] - blockSize / 2) ** 2
+    distance = lambda x, y: (x - blockSize / 2) ** 2 + (y - blockSize / 2) ** 2
 
-    return sorted(points, cmp = lambda x, y: distance(x) < distance(y))[:blockSize]
+    return sorted(points, key = len)
+    # return sorted(points, key = lambda x, y: distance(points[x][0], points[y][1]) < distance([y][1], [x][0]))[:blockSize]
 
 def make_lines(image, imageSize, orientationInEachBlock, blockSize):
     newImage = convert_to_RGB(image)
@@ -306,8 +307,7 @@ def ridge_frequency(image, blockSize, orientationInEachBlock):
     frequencys = image_frequencys(imageSize, imageLoaded, blockSize, orientationInEachBlock)
     ridgeFrequencyExtracted = image.copy()
 
-    for blockRowIndex, blockColumnIndex in itertools.product(list(range(1, imageSize['x'] / blockSize - 1)), 
-    list(range(1, imageSize['y'] / blockSize - 1))):
+    for blockRowIndex, blockColumnIndex in itertools.product(list(range(1, int(imageSize['x'] / blockSize - 1))), list(range(1, int(imageSize['y'] / blockSize - 1)))):
         left = blockRowIndex * blockSize
         top = blockColumnIndex * blockSize
         right = min(blockRowIndex * blockSize + blockSize, imageSize['x'])
@@ -405,8 +405,9 @@ def thinning_structures(imageConverted, imageSize, pixelsInImageLoaded):
     print("Done Thinning")
 
     apply_function_on_each_pixel(pixelsInImageLoaded, lambda x: 255.0 * (1 - x))
+    show_image(im)
     apply_values_to_pixels(imageConverted, imageSize, pixelsInImageLoaded)
-    
+
     return imageConverted
 
 def transpose(matrix):

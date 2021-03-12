@@ -21,20 +21,24 @@ def smooth_orientation_field(inputBlockSize):
 def normalization(inputMean, inputVariance):
     print("normalization")
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
-    image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    image = '/Users/julia.nascimento/Julia/Biometric-Library/image_1_1/1_1.jpg'
+
     return Normalization.main(image, inputMean, inputVariance)
 
 def ridge_frequency_extraction(inputBlockSize):
     print("ridge_frequency_extraction")
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
-    image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
-    
+    # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    image = '/Users/julia.nascimento/Julia/Biometric-Library/image_1_1/1_1.jpg'
+
     return RidgeFrequency.main(image, inputBlockSize)
 
 def segmentation(inputBlockSize, inputTreshold):
     print("segmentation")
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
-    image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+    image = '/Users/julia.nascimento/Julia/Biometric-Library/image_1_1/1_1.jpg'
     
     return Segmentation.main(image, inputBlockSize, inputTreshold)
 
@@ -47,8 +51,10 @@ def gabor_filter(inputBlockSize, xSigma, ySigma):
 
 def thinning_structures():
     print("thinning")
-    image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\image_8_3\\8_3_gabor.jpg"
+    # image = "D:\\REPOSITORIO PROJETO FINAL\\REPO\\image_8_3\\8_3_gabor.jpg"
     # image = "C:\\Users\\Diego\\Documents\\biometrics-master\\images\\ppf1.png"
     # image = "C:\\Users\\Diego\\Desktop\\digitais\\8_3.tif"
+
+    image = '/Users/julia.nascimento/Julia/Biometric-Library/image_1_1/1_1.jpg' 
     
     return Thinning.main(image)
